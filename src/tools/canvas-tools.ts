@@ -32,6 +32,10 @@ export const ExpandCanvasSchema = z.object({
     content: z.string().describe('노드 내용 (text, file path, or URL)'),
     color: z.string().optional().describe('노드 색상 (1-6)'),
   })).describe('추가할 노드 목록'),
+  useTopicAsAnchor: z.boolean().optional().describe(
+    'true로 설정하면 anchorId를 무시하고 Topic(CORE) 노드를 기준으로 배치합니다. ' +
+    '캔버스 레이아웃의 일관성을 위해 권장됩니다. (기본: false)'
+  ),
 });
 
 export const AddNodeSchema = z.object({
@@ -41,6 +45,9 @@ export const AddNodeSchema = z.object({
   type: z.enum(['text', 'file', 'link']).describe('노드 타입'),
   content: z.string().describe('노드 내용'),
   color: z.string().optional().describe('노드 색상'),
+  useTopicAsAnchor: z.boolean().optional().describe(
+    'true로 설정하면 anchorId를 무시하고 Topic(CORE) 노드를 기준으로 배치합니다. (기본: false)'
+  ),
 });
 
 export const GetCanvasInfoSchema = z.object({
@@ -134,8 +141,9 @@ export class CanvasTools {
   async expandCanvas(params: z.infer<typeof ExpandCanvasSchema>): Promise<{
     addedNodes: string[];
     addedEdges: number;
+    usedTopicAnchor?: boolean;
   }> {
-    const { canvasPath, anchorId, items } = params;
+    const { canvasPath, anchorId, items, useTopicAsAnchor } = params;
 
     // 기존 캔버스 로드
     const canvas = await CanvasParser.load(canvasPath);
@@ -166,6 +174,7 @@ export class CanvasTools {
         relation: item.relation,
         content,
         color: item.color,
+        useTopicAsAnchor,  // Topic 기준 배치 옵션 전달
       });
 
       if (result) {
@@ -180,11 +189,13 @@ export class CanvasTools {
     await this.metaManager.addWorkflowAction(canvasPath, 'expanded', 'canvas-tools', {
       anchorId,
       addedCount: addedNodes.length,
+      useTopicAsAnchor,
     });
 
     return {
       addedNodes,
       addedEdges: addedNodes.length,
+      usedTopicAnchor: useTopicAsAnchor,
     };
   }
 
@@ -195,8 +206,9 @@ export class CanvasTools {
     nodeId: string;
     edgeId: string | null;  // v2.1: 엣지 정책에 따라 null일 수 있음
     zone: string;
+    usedTopicAnchor?: boolean;
   }> {
-    const { canvasPath, anchorId, relation, type, content, color } = params;
+    const { canvasPath, anchorId, relation, type, content, color, useTopicAsAnchor } = params;
 
     const canvas = await CanvasParser.load(canvasPath);
     const engine = new LayoutEngine(canvas.nodes, canvas.edges);
@@ -223,6 +235,7 @@ export class CanvasTools {
       relation,
       content: contentObj,
       color,
+      useTopicAsAnchor,  // Topic 기준 배치 옵션 전달
     });
 
     await CanvasParser.save(canvasPath, engine.getNodes(), engine.getEdges());
@@ -231,6 +244,7 @@ export class CanvasTools {
       nodeId: result.node.id,
       edgeId: result.edge?.id ?? null,
       zone: result.zone,
+      usedTopicAnchor: useTopicAsAnchor,
     };
   }
 

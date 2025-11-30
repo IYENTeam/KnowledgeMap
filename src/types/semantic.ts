@@ -1,40 +1,74 @@
 /**
- * Semantic Layout Protocol Types
+ * Semantic Layout Protocol Types v2.2
+ *
+ * 핵심 공간 규칙 3개:
+ * 1. 중심 = 핵심 (Topic/Question)
+ * 2. 수직축 = 추상화 (위=일반/추상, 아래=구체/상세)
+ * 3. 수평축 = 흐름 (왼쪽=배경/원인, 오른쪽=결과/확장)
  *
  * Agent는 레이아웃을 모르고, 오직 의미적 관계만 표현합니다.
  * SemanticRouter가 관계를 Zone으로 매핑합니다.
  */
 
 // =============================================================================
+// Spatial Rules (핵심 공간 규칙)
+// =============================================================================
+
+/**
+ * 핵심 공간 규칙 - 모든 Zone 배치의 기반
+ */
+export const SPATIAL_RULES = {
+  /** 규칙 1: 중심 = 핵심 */
+  center: 'CORE는 주제/질문/비교대상 등 핵심 내용을 배치',
+  /** 규칙 2: 수직축 = 추상화 수준 */
+  vertical: '위(NORTH)=추상/일반, 아래(SOUTH)=구체/상세',
+  /** 규칙 3: 수평축 = 흐름 */
+  horizontal: '왼쪽(WEST)=배경/원인, 오른쪽(EAST)=결과/확장',
+} as const;
+
+// =============================================================================
 // Semantic Relations
 // =============================================================================
 
 export type SemanticRelation =
-  // 답변/해결 계열
+  // 구체/상세 (SOUTH) - 아래
   | 'answers'
   | 'solution'
-  // 상세/확장 계열
+  | 'definition'
+  | 'conclusion'
+  // 구체적 확장 (SOUTH_EAST) - 오른쪽 아래
   | 'elaborates'
   | 'detail'
   | 'example'
   | 'instance'
-  // 배경/맥락 계열
+  | 'application'
+  // 배경/원인 (WEST) - 왼쪽
   | 'background'
   | 'context'
+  | 'cause'
+  | 'motivation'
+  // 추상적 배경 (NORTH_WEST) - 왼쪽 위
   | 'precedes'
   | 'prerequisite'
-  // 후속/파생 계열
+  | 'theory'
+  // 결과/확장 (EAST) - 오른쪽
   | 'follows'
   | 'implication'
   | 'followUp'
-  // 대안/반론 계열
+  | 'result'
+  // 추상적 확장 (NORTH_EAST) - 오른쪽 위
+  | 'relatedConcept'
+  | 'extension'
+  // 구체적 배경 (SOUTH_WEST) - 왼쪽 아래
   | 'contradicts'
   | 'alternative'
   | 'counter'
-  // 상위/일반화 계열
+  | 'exception'
+  // 추상/일반 (NORTH) - 위
   | 'parent'
   | 'generalization'
-  // 리소스 계열
+  | 'category'
+  // 리소스 (EAST) - 오른쪽
   | 'resource'
   | 'reference';
 
@@ -69,51 +103,92 @@ export interface ZoneSpec {
 }
 
 // =============================================================================
-// Relation to Zone Mapping
+// Relation to Zone Mapping (공간 규칙 기반)
 // =============================================================================
 
+/**
+ * Relation → Zone 매핑
+ *
+ * 공간 규칙에 따른 배치:
+ * - SOUTH (아래): 구체/상세 - 답변, 정의, 결론
+ * - SOUTH_EAST (오른쪽 아래): 구체적 확장 - 예시, 적용
+ * - WEST (왼쪽): 배경/원인 - 맥락, 동기
+ * - NORTH_WEST (왼쪽 위): 추상적 배경 - 이론, 선행지식
+ * - EAST (오른쪽): 결과/확장 - 후속, 파생
+ * - NORTH_EAST (오른쪽 위): 추상적 확장 - 관련 개념
+ * - SOUTH_WEST (왼쪽 아래): 구체적 배경 - 반례, 예외, 대안
+ * - NORTH (위): 추상/일반 - 상위 개념, 분류
+ */
 export const RELATION_TO_ZONE: Record<SemanticRelation, Zone> = {
-  // 답변/해결 → 아래
+  // SOUTH (아래) - 구체/상세: 답변, 정의, 결론
   answers: 'SOUTH',
   solution: 'SOUTH',
+  definition: 'SOUTH',
+  conclusion: 'SOUTH',
 
-  // 상세/예시 → 오른쪽 아래
+  // SOUTH_EAST (오른쪽 아래) - 구체적 확장: 예시, 적용, 상세
   elaborates: 'SOUTH_EAST',
   detail: 'SOUTH_EAST',
   example: 'SOUTH_EAST',
   instance: 'SOUTH_EAST',
+  application: 'SOUTH_EAST',
 
-  // 배경/맥락 → 왼쪽
+  // WEST (왼쪽) - 배경/원인: 맥락, 동기
   background: 'WEST',
   context: 'WEST',
+  cause: 'WEST',
+  motivation: 'WEST',
 
-  // 선행 지식 → 왼쪽 위
+  // NORTH_WEST (왼쪽 위) - 추상적 배경: 이론, 선행지식
   precedes: 'NORTH_WEST',
   prerequisite: 'NORTH_WEST',
+  theory: 'NORTH_WEST',
 
-  // 후속/파생 → 오른쪽
+  // EAST (오른쪽) - 결과/확장: 후속, 파생
   follows: 'EAST',
   implication: 'EAST',
   followUp: 'EAST',
+  result: 'EAST',
+  resource: 'EAST',
+  reference: 'EAST',
 
-  // 대안/반론 → 왼쪽 아래
+  // NORTH_EAST (오른쪽 위) - 추상적 확장: 관련 개념
+  relatedConcept: 'NORTH_EAST',
+  extension: 'NORTH_EAST',
+
+  // SOUTH_WEST (왼쪽 아래) - 구체적 배경: 반례, 예외, 대안
   contradicts: 'SOUTH_WEST',
   alternative: 'SOUTH_WEST',
   counter: 'SOUTH_WEST',
+  exception: 'SOUTH_WEST',
 
-  // 상위 개념 → 위
+  // NORTH (위) - 추상/일반: 상위 개념, 분류
   parent: 'NORTH',
   generalization: 'NORTH',
-
-  // 리소스 → 오른쪽
-  resource: 'EAST',
-  reference: 'EAST',
+  category: 'NORTH',
 };
 
 // =============================================================================
-// Zone Specifications
+// Zone Specifications (공간 규칙 기반)
 // =============================================================================
 
+/**
+ * Zone 스펙 - 공간 규칙에 따른 의미 정의
+ *
+ * 수직축 (추상화):
+ *   NORTH = 추상/일반 (상위 개념, 큰 그림)
+ *   SOUTH = 구체/상세 (정의, 답변, 결론)
+ *
+ * 수평축 (흐름):
+ *   WEST = 배경/원인 (맥락, 전제, 동기)
+ *   EAST = 결과/확장 (후속, 파생, 다음)
+ *
+ * 대각선 (조합):
+ *   NORTH_WEST = 추상적 배경 (이론, 선행지식)
+ *   NORTH_EAST = 추상적 확장 (관련 개념)
+ *   SOUTH_WEST = 구체적 배경 (반례, 예외)
+ *   SOUTH_EAST = 구체적 확장 (예시, 적용)
+ */
 export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
   CORE: {
     zone: 'CORE',
@@ -121,8 +196,8 @@ export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
     dy: 0,
     edgeFrom: 'bottom',
     edgeTo: 'top',
-    defaultColor: '6', // purple
-    label: '주제',
+    defaultColor: '6', // purple - 핵심
+    label: '핵심',
     nodeSize: { width: 450, height: 120 },
   },
   NORTH: {
@@ -131,8 +206,8 @@ export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
     dy: -1,
     edgeFrom: 'top',
     edgeTo: 'bottom',
-    defaultColor: '6', // purple
-    label: '상위 개념',
+    defaultColor: '6', // purple - 추상/일반
+    label: '추상/일반',
     nodeSize: { width: 400, height: 150 },
   },
   SOUTH: {
@@ -141,8 +216,8 @@ export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
     dy: 1,
     edgeFrom: 'bottom',
     edgeTo: 'top',
-    defaultColor: '3', // yellow (답변)
-    label: '답변/결론',
+    defaultColor: '3', // yellow - 구체/상세
+    label: '구체/상세',
     nodeSize: { width: 400, height: 200 },
   },
   EAST: {
@@ -151,8 +226,8 @@ export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
     dy: 0,
     edgeFrom: 'right',
     edgeTo: 'left',
-    defaultColor: '4', // green (후속 질문)
-    label: '후속 탐구',
+    defaultColor: '4', // green - 결과/확장
+    label: '결과/확장',
     nodeSize: { width: 350, height: 150 },
   },
   WEST: {
@@ -161,8 +236,8 @@ export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
     dy: 0,
     edgeFrom: 'left',
     edgeTo: 'right',
-    defaultColor: '2', // orange (컨텍스트)
-    label: '배경 지식',
+    defaultColor: '2', // orange - 배경/원인
+    label: '배경/원인',
     nodeSize: { width: 350, height: 150 },
   },
   NORTH_EAST: {
@@ -171,8 +246,8 @@ export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
     dy: -1,
     edgeFrom: 'right',
     edgeTo: 'left',
-    defaultColor: '4', // green
-    label: '확장',
+    defaultColor: '4', // green - 추상적 확장
+    label: '추상적 확장',
     nodeSize: { width: 300, height: 120 },
   },
   NORTH_WEST: {
@@ -181,8 +256,8 @@ export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
     dy: -1,
     edgeFrom: 'left',
     edgeTo: 'right',
-    defaultColor: '2', // orange
-    label: '선행 지식',
+    defaultColor: '2', // orange - 추상적 배경
+    label: '추상적 배경',
     nodeSize: { width: 300, height: 120 },
   },
   SOUTH_EAST: {
@@ -191,8 +266,8 @@ export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
     dy: 1,
     edgeFrom: 'right',
     edgeTo: 'left',
-    defaultColor: '5', // cyan (상세/예시)
-    label: '예시/상세',
+    defaultColor: '5', // cyan - 구체적 확장
+    label: '구체적 확장',
     nodeSize: { width: 350, height: 150 },
   },
   SOUTH_WEST: {
@@ -201,26 +276,26 @@ export const ZONE_SPECS: Record<Zone, ZoneSpec> = {
     dy: 1,
     edgeFrom: 'left',
     edgeTo: 'right',
-    defaultColor: '1', // red (반론/대안)
-    label: '대안/반례',
+    defaultColor: '1', // red - 구체적 배경
+    label: '구체적 배경',
     nodeSize: { width: 350, height: 150 },
   },
 };
 
 // =============================================================================
-// Zone Labels (Korean)
+// Zone Labels (공간 규칙 기반 한국어)
 // =============================================================================
 
 export const ZONE_LABELS: Record<Zone, string> = {
-  CORE: '주제',
-  NORTH: '상위 개념',
-  SOUTH: '답변/결론',
-  EAST: '후속 탐구',
-  WEST: '배경 지식',
-  NORTH_EAST: '확장',
-  NORTH_WEST: '선행 지식',
-  SOUTH_EAST: '예시/상세',
-  SOUTH_WEST: '대안/반례',
+  CORE: '핵심',
+  NORTH: '추상/일반',
+  SOUTH: '구체/상세',
+  EAST: '결과/확장',
+  WEST: '배경/원인',
+  NORTH_EAST: '추상적 확장',
+  NORTH_WEST: '추상적 배경',
+  SOUTH_EAST: '구체적 확장',
+  SOUTH_WEST: '구체적 배경',
 };
 
 // =============================================================================
@@ -228,25 +303,64 @@ export const ZONE_LABELS: Record<Zone, string> = {
 // =============================================================================
 
 export const RELATION_ALIASES: Record<string, SemanticRelation> = {
+  // SOUTH (구체/상세)
   answer: 'answers',
   solve: 'solution',
+  def: 'definition',
+  define: 'definition',
+  conclude: 'conclusion',
+  summary: 'conclusion',
+
+  // SOUTH_EAST (구체적 확장)
   explain: 'elaborates',
   details: 'detail',
   examples: 'example',
+  apply: 'application',
+  use: 'application',
+
+  // WEST (배경/원인)
   bg: 'background',
   ctx: 'context',
+  why: 'cause',
+  reason: 'cause',
+  motive: 'motivation',
+
+  // NORTH_WEST (추상적 배경)
   before: 'precedes',
   prereq: 'prerequisite',
+  prior: 'prerequisite',
+  theoretical: 'theory',
+
+  // EAST (결과/확장)
   after: 'follows',
   next: 'followUp',
   followup: 'followUp',
+  outcome: 'result',
+  effect: 'result',
+  consequence: 'implication',
+
+  // NORTH_EAST (추상적 확장)
+  related: 'relatedConcept',
+  extend: 'extension',
+  expand: 'extension',
+
+  // SOUTH_WEST (구체적 배경)
   oppose: 'contradicts',
   alt: 'alternative',
   vs: 'contradicts',
+  except: 'exception',
+  counterexample: 'counter',
+
+  // NORTH (추상/일반)
   super: 'parent',
   general: 'generalization',
+  classify: 'category',
+  type: 'category',
+
+  // 리소스
   ref: 'reference',
   link: 'resource',
+  src: 'resource',
 };
 
 // =============================================================================
@@ -259,37 +373,62 @@ export const RELATION_ALIASES: Record<string, SemanticRelation> = {
  * - noEdgeFor: 이 relation들은 Zone 배치만 (엣지 없음)
  */
 export const EDGE_POLICY = {
-  // 엣지를 생성할 relation 유형
+  // 엣지를 생성할 relation 유형 (핵심 연결만)
   createEdgeFor: [
-    'answers',    // 질문 → 답변
-    'solution',   // 문제 → 해결
+    'answers',     // 질문 → 답변
+    'solution',    // 문제 → 해결
+    'definition',  // 주제 → 정의
+    'conclusion',  // 분석 → 결론
   ] as SemanticRelation[],
 
   // Topic에서 연결할 relation (핵심만)
   topicConnections: [
-    'answers',    // Topic → 첫 번째 핵심 답변
+    'answers',     // Topic → 핵심 답변
+    'definition',  // Topic → 정의
   ] as SemanticRelation[],
 
-  // 엣지 생성 안 함 (Zone 배치만)
+  // 엣지 생성 안 함 (Zone 배치만 - 공간 규칙으로 관계 표현)
   noEdgeFor: [
-    'background',
-    'prerequisite',
-    'precedes',
-    'follows',
-    'followUp',
+    // SOUTH_EAST (구체적 확장)
     'elaborates',
     'detail',
     'example',
     'instance',
+    'application',
+
+    // WEST (배경/원인)
+    'background',
+    'context',
+    'cause',
+    'motivation',
+
+    // NORTH_WEST (추상적 배경)
+    'prerequisite',
+    'precedes',
+    'theory',
+
+    // EAST (결과/확장)
+    'follows',
+    'followUp',
+    'implication',
+    'result',
+    'resource',
+    'reference',
+
+    // NORTH_EAST (추상적 확장)
+    'relatedConcept',
+    'extension',
+
+    // SOUTH_WEST (구체적 배경)
     'contradicts',
     'alternative',
     'counter',
+    'exception',
+
+    // NORTH (추상/일반)
     'parent',
     'generalization',
-    'resource',
-    'reference',
-    'context',
-    'implication',
+    'category',
   ] as SemanticRelation[],
 };
 

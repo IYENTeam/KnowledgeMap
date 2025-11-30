@@ -35,6 +35,12 @@ export interface AllocateNodeOptions {
         url?: string;
     };
     color?: string;
+    /**
+     * true로 설정하면 anchorId를 무시하고 Topic(CORE) 노드를 anchor로 사용합니다.
+     * 캔버스 확장 시 모든 노드를 Topic 기준으로 배치하여 레이아웃 일관성을 유지합니다.
+     * @default false
+     */
+    useTopicAsAnchor?: boolean;
 }
 export interface AllocateResult {
     node: CanvasNode;
@@ -57,12 +63,15 @@ export declare class LayoutEngine {
     allocateByRelation(options: AllocateNodeOptions): AllocateResult;
     /**
      * 여러 노드를 의미적 관계 기반으로 배치합니다.
+     * @param anchorId - 기본 anchor 노드 ID
+     * @param items - 배치할 노드 목록
+     * @param useTopicAsAnchor - true면 모든 노드를 Topic 기준으로 배치 (권장)
      */
     allocateMultiple(anchorId: string, items: Array<{
         relation: string;
         content: AllocateNodeOptions['content'];
         color?: string;
-    }>): AllocateResult[];
+    }>, useTopicAsAnchor?: boolean): AllocateResult[];
     private allocateInZoneWithFallback;
     private findPositionInZone;
     private trySimplePosition;
@@ -83,6 +92,13 @@ export declare class LayoutEngine {
     private expandGroup;
     private getNodesInZone;
     private findNode;
+    /**
+     * Topic(CORE) 노드를 찾습니다.
+     * 1순위: CORE Zone 메타데이터가 있는 노드
+     * 2순위: '# '로 시작하는 텍스트 노드 (Topic 형식)
+     * 3순위: 가장 먼저 생성된 텍스트 노드
+     */
+    private findTopicNode;
     /**
      * 현재 노드 리스트를 반환합니다.
      * WeakMap을 사용하므로 별도의 클린업 불필요

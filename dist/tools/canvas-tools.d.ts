@@ -39,6 +39,7 @@ export declare const ExpandCanvasSchema: z.ZodObject<{
         relation: string;
         color?: string | undefined;
     }>, "many">;
+    useTopicAsAnchor: z.ZodOptional<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
     anchorId: string;
     canvasPath: string;
@@ -48,6 +49,7 @@ export declare const ExpandCanvasSchema: z.ZodObject<{
         relation: string;
         color?: string | undefined;
     }[];
+    useTopicAsAnchor?: boolean | undefined;
 }, {
     anchorId: string;
     canvasPath: string;
@@ -57,6 +59,7 @@ export declare const ExpandCanvasSchema: z.ZodObject<{
         relation: string;
         color?: string | undefined;
     }[];
+    useTopicAsAnchor?: boolean | undefined;
 }>;
 export declare const AddNodeSchema: z.ZodObject<{
     canvasPath: z.ZodString;
@@ -65,6 +68,7 @@ export declare const AddNodeSchema: z.ZodObject<{
     type: z.ZodEnum<["text", "file", "link"]>;
     content: z.ZodString;
     color: z.ZodOptional<z.ZodString>;
+    useTopicAsAnchor: z.ZodOptional<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
     anchorId: string;
     canvasPath: string;
@@ -72,6 +76,7 @@ export declare const AddNodeSchema: z.ZodObject<{
     content: string;
     relation: string;
     color?: string | undefined;
+    useTopicAsAnchor?: boolean | undefined;
 }, {
     anchorId: string;
     canvasPath: string;
@@ -79,6 +84,7 @@ export declare const AddNodeSchema: z.ZodObject<{
     content: string;
     relation: string;
     color?: string | undefined;
+    useTopicAsAnchor?: boolean | undefined;
 }>;
 export declare const GetCanvasInfoSchema: z.ZodObject<{
     canvasPath: z.ZodString;
@@ -143,6 +149,7 @@ export declare class CanvasTools {
     expandCanvas(params: z.infer<typeof ExpandCanvasSchema>): Promise<{
         addedNodes: string[];
         addedEdges: number;
+        usedTopicAnchor?: boolean;
     }>;
     /**
      * 단일 노드 추가
@@ -151,6 +158,7 @@ export declare class CanvasTools {
         nodeId: string;
         edgeId: string | null;
         zone: string;
+        usedTopicAnchor?: boolean;
     }>;
     /**
      * 캔버스 정보 조회
