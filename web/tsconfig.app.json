@@ -16,10 +16,10 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@knowledgeos/types/*": ["../src/types/*"],
-      "@knowledgeos/engine/*": ["../src/engine/*"],
+      "@knowledgeos/types/*": ["./src/shared/types/*"],
+      "@knowledgeos/engine/*": ["./src/shared/engine/*"],
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "../src/types", "../src/engine/semantic-router.ts"]
+  "include": ["src"]
 }

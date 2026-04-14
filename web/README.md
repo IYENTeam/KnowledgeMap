@@ -1,166 +1,123 @@
-# Canvas Knowledge Editor
+# KnowledgeMap
 
-논문 PDF를 업로드하면 Claude가 동심원 지식 그래프로 분해해주는 웹 에디터.
-100% 브라우저에서 실행 — 서버 없음, DB 없음, API 키는 로컬에 암호화 저장.
+**논문 PDF 한 장 올리면, 그 논문이 답하는 핵심 질문 → 답변 → 더 쉬운 설명이 동심원으로 그려집니다.**
+
+중앙에는 논문의 핵심 질문이 놓이고, 바깥으로 갈수록 같은 내용을 **더 쉬운 말로 풀어쓴** 레이어가 나옵니다. 새로운 내용이 추가되는 게 아니라 안쪽 설명의 용어가 한 층씩 풀어지는 구조라, 논문을 처음 보는 사람도 안에서 바깥으로 읽어나가면서 이해의 깊이를 조절할 수 있어요.
+
+https://github.com/IYENTeam/KnowledgeMap
 
 ---
 
-## 🚀 AI 에이전트에게 시키는 방법 (사용자용)
+## 설치해서 쓰는 법 (비개발자용)
 
-비개발자가 Claude Code / Codex / Cursor 등에게 아래 내용을 붙여넣으면 됩니다:
+Claude Code / Codex / Cursor 같은 AI 코딩 도구를 쓰면 설치가 한 번에 끝납니다.
+AI 에게 아래 문장을 그대로 붙여넣으세요:
 
 ```
-이 레포를 클론하고 웹 앱을 실행해줘: <REPO_URL>
+이 레포를 내 컴퓨터에 설치하고 웹 서버 실행해줘:
+https://github.com/IYENTeam/KnowledgeMap
 
-절차:
-1. 이 레포를 clone
-2. cd <repo>/web
+1. git clone
+2. cd KnowledgeMap/web
 3. npm install
 4. npm run dev
-5. 브라우저에서 http://localhost:5173 열기
 
-설치 중 문제 생기면 해결해줘.
-내가 할 일은 아무것도 없고, 끝나면 알려줘.
+성공하면 http://localhost:5173 을 브라우저에서 열면 돼.
+오류 나면 알아서 해결해줘.
 ```
 
-끝. AI 에이전트가 알아서 Node.js 버전 확인, 의존성 설치, dev 서버 실행까지 수행합니다.
-
-사용자는 로컬 `http://localhost:5173` 에서 바로 사용 가능.
-
----
-
-## 💡 사용법
-
-1. 첫 실행 시 **Anthropic API 키** 요구 (사용자 본인 키 사용):
-   - https://console.anthropic.com/settings/keys 에서 발급
-   - 앱에서 비밀번호로 암호화하여 로컬에만 저장 (서버 전송 X)
-
-2. **논문 PDF 드래그앤드롭** → Claude가 자동 분해
-
-3. 노드 우클릭 → **"✨ AI로 확장"** 으로 특정 가지를 더 깊이 탐구
-
-4. **Ctrl+S** 로 저장 · **Export** 로 HTML/JSON 내보내기
+그럼 AI가 Node.js 설치 확인, 의존성 설치, 개발 서버 실행까지 해줍니다.
+브라우저에서 `http://localhost:5173` 열면 끝.
 
 ---
 
-## 🔧 Requirements
+## 처음 쓸 때
 
-- **Node.js 18+** (20 권장)
-- **npm** 또는 pnpm / yarn
-- Chrome / Edge / Safari / Firefox (File System 저장 기능은 Chromium 계열에서만)
+1. 첫 화면에서 **Anthropic API 키** 를 등록합니다.
+   - [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys) 에서 받을 수 있어요.
+   - 요금: 논문 한 개당 대략 ¢10~¢30 (모델 요금 기준, 본인 앞으로 과금).
+2. 직접 정한 비밀번호로 키를 암호화해서 브라우저에만 저장합니다. 서버로 전송되지 않아요.
+3. 논문 PDF 파일을 드래그앤드롭.
+4. 질문이 먼저 뜨고, 답변이 채워지고, 바깥쪽 설명이 순서대로 스트리밍돼요.
 
-## 📦 설치 & 실행
+---
+
+## 핵심 아이디어
+
+- **중앙 = 논문의 핵심 질문들** (3~5개)
+- **중간 링 = 각 질문에 대한 답변** (논문 용어 그대로)
+- **바깥쪽 링 = 같은 답변을 더 쉬운 말로 풀어쓴 버전**
+- 더 쉽게 보고 싶으면 노드 우클릭 → **"한 층 더 쉽게 풀어줘"** 로 한 단계씩 풀 수 있어요.
+- 설명의 원본은 중간 링(답변)에 있고, 바깥은 **같은 내용을 쉬운 말로 재표현** 한 것뿐이에요. 새로운 주제가 갑자기 튀어나오지 않습니다.
+
+---
+
+## 뭐가 돼요?
+
+- PDF 한 개 → 지식 지도 한 장 (AI 자동 생성)
+- 노드 드래그 / 크기 조절 / 색 바꾸기 / 연결 선 긋기
+- 되돌리기, 복사/붙여넣기, 단축키
+- `.canvas` 파일로 저장 (Obsidian Canvas 호환)
+- HTML 파일로 내보내기 (메일·카톡으로 공유해도 그대로 열림)
+- 한국어 / 영어 UI, 어두운 / 밝은 테마, 글자 크기 조절
+
+---
+
+## 기술적인 부분 (개발자용)
+
+### 실행
 
 ```bash
-# 의존성 설치
+cd web
 npm install
-
-# 개발 서버 (권장: 일반 사용)
-npm run dev
-# → http://localhost:5173
-
-# 프로덕션 빌드
-npm run build
-
-# 빌드 결과 로컬 프리뷰
-npm run preview
+npm run dev        # http://localhost:5173
+npm run build      # 프로덕션 빌드
 ```
 
-다른 기기에서도 접근 가능하게 하려면:
-```bash
-npm run dev -- --host 0.0.0.0
-```
+### 구조
 
-## 🔑 환경 변수
+- **프론트엔드 전용** - 서버, DB, 인증 시스템 없음
+- Claude API 를 브라우저에서 직접 호출 (`anthropic-dangerous-direct-browser-access`)
+- PDF 파싱도 브라우저 (pdfjs-dist)
+- API 키는 **PBKDF2 + AES-256-GCM** 으로 비밀번호 암호화해서 `localStorage`에 저장
 
-**없음.** Claude API 키는 사용자가 UI 에서 직접 입력.
-서버 배포해도 별도 env 설정 불필요.
+### 쓰는 것
 
-## 🌐 호스팅 배포 (선택)
+- Vite + React 18 + TypeScript
+- [@xyflow/react](https://reactflow.dev) — 노드 그래프
+- pdfjs-dist — PDF 텍스트 추출
+- Tailwind CSS v4
+- zod — 런타임 스키마 검증
+- Web Crypto API — 키 암호화
 
-로컬 실행 대신 URL로 공유하고 싶으면:
-- **Vercel**: `vercel.json` 설정 포함되어 있음 → Root Directory 를 `web` 로 지정하면 끝
-- **Netlify / Cloudflare Pages**: 빌드 명령 `npm run build`, 출력 `dist`
-- **GitHub Pages**: `vite.config.ts` 에 `base: '/<repo-name>/'` 추가 필요
-
-## 🔒 보안 모델
-
-| 항목 | 처리 방식 |
-|------|----------|
-| API 키 | PBKDF2(210K iter) + AES-256-GCM, 사용자 비밀번호로 암호화 후 localStorage |
-| PDF 내용 | 클라이언트에서 pdfjs로 추출 → Anthropic 직접 호출 (중간 서버 없음) |
-| 생성된 캔버스 | 사용자 로컬 파일 또는 수동 다운로드 |
-| Claude API 호출 | `anthropic-dangerous-direct-browser-access` 헤더로 브라우저에서 직접 |
-
-## 🎨 주요 기능
-
-- **PDF 기반 3-depth 자동 분해**: 핵심 질문 (3-5개) → 답변 → 상세 설명
-- **동심원 레이아웃**: 중앙 = 주제, 바깥으로 갈수록 구체화
-- **충돌 없음 보장**: 노드 겹침 자동 해결 (결정론적)
-- **동적 심화 확장**: "✨ Expand with AI" / "깊이 확장" 버튼
-- **프롬프트 캐싱**: PDF 원문 → Claude 캐시로 저장, 병렬 호출 비용 절감
-- **원본 근거 보장**: 모든 생성 콘텐츠가 원본 소스 참조
-- **한/영 전환**: UI + AI 출력 모두
-- **다크/라이트 테마 + 폰트 크기 조절**
-- **되돌리기/다시실행/복사/붙여넣기/노드 리사이즈/드래그**
-- **Zod 스키마 검증 + auto-fix** 미들웨어
-- **Export**: `.canvas` JSON (Obsidian 호환) / Self-contained HTML
-
-## 📁 프로젝트 구조
+### 동작 원리
 
 ```
-web/
-├── public/canvases/          # 예제 .canvas 파일
-├── src/
-│   ├── App.tsx               # 앱 쉘 + 모달 오케스트레이션
-│   ├── components/           # UI 컴포넌트
-│   │   ├── CanvasViewer.tsx
-│   │   ├── DecomposeDialog.tsx
-│   │   ├── nodes/ edges/     # 커스텀 노드 & 엣지
-│   │   └── ...
-│   ├── hooks/                # useApiKey, useCanvasData, useTheme, ...
-│   ├── lib/                  # staged-decompose, claude-api, pdf-extract, encryption, i18n, ...
-│   └── styles/index.css
-├── vite.config.ts
-├── vercel.json
-└── README.md (이 파일)
+PDF → 텍스트 추출 (pdfjs, 브라우저 내)
+   ↓
+Claude 1단계: 핵심 질문 3-5개 뽑기     → 토픽 + 질문 노드 즉시 렌더
+   ↓
+Claude 2단계 (병렬): 질문별 답변 생성   → 완성되는 대로 스트리밍 추가
+   ↓
+Claude 3단계 (병렬): 답변별 쉬운 재표현 → 완성되는 대로 스트리밍 추가
 ```
 
-상위 레포에 TypeScript 타입 공유 (MCP 서버와 공유):
-- `../src/types/` — Canvas / Semantic 타입
-- Vite path alias 로 import
+- 원본 PDF 텍스트는 **프롬프트 캐시** (Anthropic ephemeral cache) 로 저장해서 반복 호출 비용 최소화
+- Rate limit (429) 에 걸리면 자동 재시도 (최대 20회, 지수 백오프 2~64초)
+- 동심원 배치는 각도 섹터 기반 트리 레이아웃 + AABB 충돌 회피로 겹치지 않도록 보장
 
-## 🐛 문제 해결
+### 문제 해결
 
-### `npm install` 실패 (권한 오류)
-```bash
-npm install --cache /tmp/npm-cache
-```
+| 증상 | 해결 |
+|---|---|
+| `npm install` 권한 오류 | `npm install --cache /tmp/npm-cache` |
+| 포트 5173 사용 중 | `npm run dev -- --port 3000` |
+| API 키 401 | `sk-ant-` 로 시작하는지 확인 |
+| PDF 텍스트 추출 실패 | 스캔 이미지 PDF 는 지원 안 됨 (OCR 된 PDF 필요) |
+| 아주 긴 PDF | 자동으로 앞 70% + 뒤 25% 만 사용 (중간 생략) |
 
-### 포트 5173 사용 중
-```bash
-npm run dev -- --port 3000
-```
+---
 
-### Claude API 401 오류
-설정에서 API 키 재확인. `sk-ant-` 로 시작해야 함.
+## 라이선스
 
-### PDF 파싱 실패
-스캔된 이미지 PDF는 텍스트 추출 불가. OCR 처리된 PDF 필요.
-
-### 큰 PDF (150K+ 글자)
-자동으로 앞 70% + 뒤 25% 만 사용 (중간 생략). Claude 컨텍스트 제약.
-
-## 🔗 Tech Stack
-
-- **Vite** + **React 18** + **TypeScript**
-- **@xyflow/react** v12 — 노드 그래프
-- **pdfjs-dist** — PDF 텍스트 추출
-- **zod** — 런타임 검증
-- **Tailwind CSS** v4
-- **react-markdown** — 노드 내 마크다운
-- **Web Crypto API** — 키 암호화
-
-## License
-
-MIT (또는 사용자가 지정)
+MIT
