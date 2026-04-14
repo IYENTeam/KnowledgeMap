@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/* ── Theme variables ────────────────────────────────────────── */
+
+:root,
+[data-theme="dark"] {
+  --bg-primary: #09090b;
+  --bg-secondary: #18181b;
+  --bg-tertiary: #27272a;
+  --bg-hover: #3f3f46;
+  --border: #3f3f46;
+  --border-subtle: #27272a;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-faint: #52525b;
+  --node-bg-opacity: 0.15;
+  --node-border-opacity: 0.4;
+  --rf-bg-dots: rgb(63 63 70 / 0.5);
+  --rf-controls-bg: #27272a;
+  --rf-controls-border: #3f3f46;
+  --rf-controls-fill: #a1a1aa;
+  --rf-controls-hover: #3f3f46;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --code-bg: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f4f5;
+  --bg-tertiary: #e4e4e7;
+  --bg-hover: #d4d4d8;
+  --border: #d4d4d8;
+  --border-subtle: #e4e4e7;
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --text-faint: #a1a1aa;
+  --node-bg-opacity: 0.12;
+  --node-border-opacity: 0.35;
+  --rf-bg-dots: rgb(161 161 170 / 0.3);
+  --rf-controls-bg: #f4f4f5;
+  --rf-controls-border: #d4d4d8;
+  --rf-controls-fill: #52525b;
+  --rf-controls-hover: #e4e4e7;
+  --overlay-bg: rgba(0, 0, 0, 0.3);
+  --code-bg: rgba(0, 0, 0, 0.06);
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* ── React Flow overrides ────────────────────────────────── */
+
+.react-flow__node {
+  cursor: default !important;
+}
+
+.react-flow__handle {
+  opacity: 0;
+  width: 8px;
+  height: 8px;
+  transition: opacity 0.15s;
+}
+
+.react-flow__node:hover .react-flow__handle {
+  opacity: 0.7;
+}
+
+.react-flow__edge-path {
+  stroke-width: 1.5;
+}
+
+.react-flow__controls {
+  border: 1px solid var(--rf-controls-border) !important;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  background-color: var(--rf-controls-bg) !important;
+  border-bottom-color: var(--rf-controls-border) !important;
+  fill: var(--rf-controls-fill) !important;
+}
+
+.react-flow__controls-button:hover {
+  background-color: var(--rf-controls-hover) !important;
+}
+
+/* Edge styling */
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke-width: 2.5;
+}
+
+.react-flow__connection-line {
+  stroke: var(--text-muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+}
+
+/* Node resize handles */
+.react-flow__resize-control.handle {
+  border-radius: 50%;
+}
+
+/* ── Markdown inside nodes ───────────────────────────────── */
+
+:root {
+  --node-font-scale: 1;
+}
+
+.node-markdown {
+  font-size: calc(0.95rem * var(--node-font-scale));
+  line-height: 1.55;
+}
+
+.node-markdown h1 {
+  font-size: calc(1.35rem * var(--node-font-scale));
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.node-markdown h2 {
+  font-size: calc(1.15rem * var(--node-font-scale));
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.node-markdown h3 {
+  font-size: calc(1rem * var(--node-font-scale));
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.node-markdown p {
+  font-size: calc(0.95rem * var(--node-font-scale));
+  line-height: 1.6;
+  margin-bottom: 0.35rem;
+}
+
+.node-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.node-markdown ul,
+.node-markdown ol {
+  font-size: calc(0.95rem * var(--node-font-scale));
+  padding-left: 1.1rem;
+  margin-bottom: 0.35rem;
+}
+
+.node-markdown li {
+  margin-bottom: 0.25rem;
+  line-height: 1.55;
+}
+
+.node-markdown code {
+  background: var(--code-bg);
+  padding: 0.125rem 0.3rem;
+  border-radius: 0.25rem;
+  font-size: calc(0.85rem * var(--node-font-scale));
+  font-family: ui-monospace, monospace;
+}
+
+.node-markdown pre {
+  background: var(--code-bg);
+  padding: 0.6rem;
+  border-radius: 0.3rem;
+  font-size: calc(0.82rem * var(--node-font-scale));
+  font-family: ui-monospace, monospace;
+  overflow-x: auto;
+  margin-bottom: 0.35rem;
+}
+
+.node-markdown pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.node-markdown strong {
+  font-weight: 600;
+}
+
+.node-markdown a {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+/* ── Theme utility classes ───────────────────────────────── */
+
+.theme-bg { background-color: var(--bg-primary); }
+.theme-bg-secondary { background-color: var(--bg-secondary); }
+.theme-bg-tertiary { background-color: var(--bg-tertiary); }
+.theme-bg-hover:hover { background-color: var(--bg-hover); }
+.theme-border { border-color: var(--border); }
+.theme-border-subtle { border-color: var(--border-subtle); }
+.theme-text { color: var(--text-primary); }
+.theme-text-secondary { color: var(--text-secondary); }
+.theme-text-muted { color: var(--text-muted); }
+.theme-text-faint { color: var(--text-faint); }

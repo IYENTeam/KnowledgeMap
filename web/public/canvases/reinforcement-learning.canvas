@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": "topic-1",
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 450,
+      "height": 120,
+      "color": "6",
+      "text": "# Reinforcement Learning\n\n에이전트가 환경과 상호작용하며 보상을 최대화하는 행동 정책을 학습하는 머신러닝 패러다임"
+    },
+
+    {
+      "id": "north-1",
+      "type": "text",
+      "x": 25,
+      "y": -280,
+      "width": 400,
+      "height": 140,
+      "color": "6",
+      "text": "## 머신러닝의 세 패러다임\n\n- **지도학습**: 레이블된 데이터로 함수 학습\n- **비지도학습**: 레이블 없이 패턴/구조 발견\n- **강화학습**: 시행착오로 최적 행동 학습\n\nRL은 순차적 의사결정(sequential decision making)에 특화"
+    },
+
+    {
+      "id": "south-1",
+      "type": "text",
+      "x": 0,
+      "y": 240,
+      "width": 450,
+      "height": 250,
+      "color": "3",
+      "text": "## 핵심 구성 요소\n\n- **Agent**: 의사결정 주체\n- **Environment**: 에이전트가 상호작용하는 세계\n- **State (S)**: 환경의 현재 상태\n- **Action (A)**: 에이전트가 취할 수 있는 행동\n- **Reward (R)**: 행동에 대한 즉각적 피드백\n- **Policy (π)**: 상태 → 행동 매핑 함수\n- **Value Function (V)**: 상태의 장기적 가치 추정"
+    },
+    {
+      "id": "south-2",
+      "type": "text",
+      "x": 0,
+      "y": 530,
+      "width": 450,
+      "height": 180,
+      "color": "3",
+      "text": "## 벨만 방정식\n\n모든 RL 알고리즘의 수학적 기반:\n\n`V(s) = max_a [R(s,a) + γ Σ P(s'|s,a) V(s')]`\n\n- **γ (감가율)**: 미래 보상의 현재 가치 할인\n- **P(s'|s,a)**: 상태 전이 확률\n- 최적 정책은 벨만 최적 방정식을 만족"
+    },
+
+    {
+      "id": "west-1",
+      "type": "text",
+      "x": -520,
+      "y": -30,
+      "width": 380,
+      "height": 160,
+      "color": "2",
+      "text": "## 배경: 행동주의 심리학\n\n- **Edward Thorndike** (1898): 시행착오 학습의 법칙\n- **B.F. Skinner**: 조작적 조건형성\n  - 보상 → 행동 강화\n  - 벌 → 행동 억제\n- 동물 학습 실험이 RL의 직관적 기반"
+    },
+    {
+      "id": "west-2",
+      "type": "text",
+      "x": -520,
+      "y": 170,
+      "width": 380,
+      "height": 140,
+      "color": "2",
+      "text": "## 최적 제어 이론\n\n- **Richard Bellman** (1950s): 동적 프로그래밍\n- 연속 시간 최적 제어 문제\n- Hamilton-Jacobi-Bellman 방정식\n- RL은 이를 이산 시간, 확률적 환경으로 확장"
+    },
+
+    {
+      "id": "east-1",
+      "type": "text",
+      "x": 570,
+      "y": -30,
+      "width": 350,
+      "height": 160,
+      "color": "4",
+      "text": "## 핵심 알고리즘 계보\n\n- **Value-based**: Q-Learning, DQN\n- **Policy-based**: REINFORCE, PPO\n- **Actor-Critic**: A3C, SAC\n- **Model-based**: Dyna, MuZero\n\n2013 DQN 이후 Deep RL 시대 개막"
+    },
+    {
+      "id": "east-2",
+      "type": "text",
+      "x": 570,
+      "y": 170,
+      "width": 350,
+      "height": 120,
+      "color": "4",
+      "text": "## RLHF (후속 발전)\n\n- **Reinforcement Learning from Human Feedback**\n- LLM 정렬(alignment)의 핵심 기술\n- ChatGPT, Claude 등의 학습에 사용\n- 보상 모델을 인간 선호도로 학습"
+    },
+
+    {
+      "id": "nw-1",
+      "type": "text",
+      "x": -520,
+      "y": -280,
+      "width": 380,
+      "height": 200,
+      "color": "2",
+      "text": "## 선행 이론: MDP + 동적 프로그래밍\n\n**마르코프 결정 과정 (MDP)**:\n- 마르코프 성질: 미래는 현재 상태에만 의존\n- 5-tuple: (S, A, P, R, γ)\n\n**동적 프로그래밍** (Bellman, 1950s):\n- Policy Iteration / Value Iteration\n- 전제: 환경 모델을 완전히 알아야 함"
+    },
+
+    {
+      "id": "ne-1",
+      "type": "text",
+      "x": 570,
+      "y": -280,
+      "width": 350,
+      "height": 130,
+      "color": "4",
+      "text": "## Multi-Agent RL\n\n- 여러 에이전트가 동시에 학습\n- 협력 / 경쟁 / 혼합 환경\n- Nash 균형 탐색\n- 응용: 자율주행 교통, 팀 전략 게임"
+    },
+    {
+      "id": "ne-2",
+      "type": "text",
+      "x": 570,
+      "y": -110,
+
+      "width": 350,
+      "height": 100,
+      "color": "4",
+      "text": "## Inverse RL\n\n- 관찰된 행동에서 보상 함수를 **역추론**\n- 전문가 시연으로부터 학습\n- 모방 학습(Imitation Learning)과 연결"
+    },
+
+    {
+      "id": "se-1",
+      "type": "text",
+      "x": 570,
+      "y": 350,
+      "width": 350,
+      "height": 180,
+      "color": "5",
+      "text": "## 적용 사례\n\n- **AlphaGo/AlphaZero**: 바둑, 체스 초인적 수준\n- **OpenAI Five**: Dota 2 프로 팀 격파\n- **로보틱스**: 보행, 물체 조작\n- **추천 시스템**: 장기적 사용자 만족 최적화\n- **자율주행**: 주행 정책 학습\n- **칩 설계**: Google TPU 레이아웃 최적화"
+    },
+
+    {
+      "id": "sw-1",
+      "type": "text",
+      "x": -520,
+      "y": 350,
+      "width": 380,
+      "height": 180,
+      "color": "1",
+      "text": "## 한계점\n\n- **Sample Inefficiency**: 수백만 번의 시행착오 필요\n- **Reward Hacking**: 의도와 다른 방식으로 보상 최대화\n- **Sparse Reward**: 보상이 드물면 학습 극히 어려움\n- **Sim-to-Real Gap**: 시뮬레이션→실제 환경 전이 어려움\n- **Safety**: 학습 중 위험한 행동 방지 어려움"
+    },
+    {
+      "id": "sw-2",
+      "type": "text",
+      "x": -520,
+      "y": 570,
+      "width": 380,
+      "height": 120,
+      "color": "1",
+      "text": "## 대안적 접근\n\n- **Offline RL**: 기존 데이터만으로 학습 (탐색 없음)\n- **Curriculum Learning**: 쉬운 것부터 점진적 난이도 증가\n- **Reward Shaping**: 보상 함수 설계 개선"
+    },
+
+    {
+      "id": "link-1",
+      "type": "link",
+      "x": 570,
+      "y": 570,
+      "width": 350,
+      "height": 80,
+      "color": "5",
+      "url": "https://www.andrew.cmu.edu/course/10-703/textbook/BarsutronFeb2019.pdf"
+    }
+  ],
+
+  "edges": [
+    {
+      "id": "e-topic-def",
+      "fromNode": "topic-1",
+      "toNode": "south-1",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "color": "3",
+      "label": "definition"
+    },
+    {
+      "id": "e-topic-bellman",
+      "fromNode": "topic-1",
+      "toNode": "south-2",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "color": "3"
+    }
+  ]
+}
